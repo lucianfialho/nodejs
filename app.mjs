@@ -137,15 +137,21 @@ async function scrapeSneakerDetails(sneakers) {
           let changeType = "";
           let priceChange = "";
           const existingDataParsed = JSON.parse(existingData);
-          if (existingDataParsed.price !== details.price) {
-            const priceDifference = details.price - existingDataParsed.price;
+
+          // Verificar mudanças no preço promocional ou no preço normal
+          const previousPrice =
+            existingDataParsed.promotionalPrice || existingDataParsed.price;
+          const currentPrice = details.promotionalPrice || details.price;
+
+          if (previousPrice !== currentPrice) {
+            const priceDifference = currentPrice - previousPrice;
             const pricePercentage = (
-              (priceDifference / existingDataParsed.price) *
+              (priceDifference / previousPrice) *
               100
             ).toFixed(2);
-            priceChange = `O preço mudou de R$${existingDataParsed.price.toFixed(
+            priceChange = `O preço mudou de R$${previousPrice.toFixed(
               2
-            )} para R$${details.price.toFixed(2)} (${
+            )} para R$${currentPrice.toFixed(2)} (${
               priceDifference > 0 ? "↑" : "↓"
             } ${Math.abs(pricePercentage)}%)\n`;
 
@@ -157,13 +163,18 @@ async function scrapeSneakerDetails(sneakers) {
 
             changeType = "⚡ Mudança de Preço";
             const priceChangeMessage =
-              `${changeType} para o tênis ${details.silhoutte}!\n` +
-              `${priceChange}🛒 Confira aqui: ${details.url}`;
+              `${changeType} no tênis ${details.silhoutte}!\n` +
+              `${priceChange}` +
+              `Tamanhos disponíveis: ${details.availableSizes.join(", ")}\n` +
+              `🛒 Confira aqui: ${details.url}`;
 
-            await sendWhatsappMessage(
-              priceChangeMessage,
-              details.images[0].url
-            );
+            // Enviar mensagem somente se houver desconto
+            if (details.promotionalPrice || previousPrice > currentPrice) {
+              await sendWhatsappMessage(
+                priceChangeMessage,
+                details.images[0].url
+              );
+            }
           }
 
           if (!existingDataParsed.stocked && details.stocked) {
@@ -172,6 +183,7 @@ async function scrapeSneakerDetails(sneakers) {
             const restockMessage =
               `${changeType} para o tênis ${details.silhoutte}!\n` +
               `Agora disponível! ✅\n` +
+              `Tamanhos disponíveis: ${details.availableSizes.join(", ")}\n` +
               `🛒 Confira aqui: ${details.url}`;
 
             await sendWhatsappMessage(restockMessage, details.images[0].url);
