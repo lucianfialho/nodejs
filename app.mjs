@@ -140,10 +140,13 @@ async function scrapeSneakerDetails(sneakers) {
 
           // Verificar mudanças no preço promocional ou no preço normal
           const previousPrice =
-            existingDataParsed.promotionalPrice || existingDataParsed.price;
-          const currentPrice = details.promotionalPrice || details.price;
+            existingDataParsed.promotionalPrice ||
+            existingDataParsed.originalPrice;
+          const currentPrice =
+            details.promotionalPrice || details.originalPrice;
 
           if (previousPrice !== currentPrice) {
+            console.log(existingDataParsed, details);
             const priceDifference = currentPrice - previousPrice;
             const pricePercentage = (
               (priceDifference / previousPrice) *
