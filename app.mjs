@@ -170,10 +170,10 @@ async function scrapeSneakerDetails(sneakers) {
 
             // Enviar mensagem somente se houver desconto
             if (details.promotionalPrice || previousPrice > currentPrice) {
-              await sendWhatsappMessage(
-                priceChangeMessage,
-                details.images[0].url
-              );
+              // await sendWhatsappMessage(
+              //   priceChangeMessage,
+              //   details.images[0].url
+              // );
             }
           }
 
@@ -186,7 +186,7 @@ async function scrapeSneakerDetails(sneakers) {
               `Tamanhos disponíveis: ${details.availableSizes.join(", ")}\n` +
               `🛒 Confira aqui: ${details.url}`;
 
-            await sendWhatsappMessage(restockMessage, details.images[0].url);
+            // await sendWhatsappMessage(restockMessage, details.images[0].url);
           }
 
           if (changeType) {
@@ -257,7 +257,7 @@ async function sendDailyPriceSummary(dailyPriceChanges, todayReleases) {
   }
 
   if (summaryMessage) {
-    await sendWhatsappMessage(summaryMessage);
+    // await sendWhatsappMessage(summaryMessage);
   } else {
     console.info(
       "[INFO] Nenhuma variação de preço ou lançamento significativo para o resumo diário."
