@@ -145,7 +145,7 @@ async function scrapeSneakerDetails(sneakers) {
           const currentPrice =
             details.promotionalPrice || details.originalPrice;
 
-          if (previousPrice !== currentPrice) {
+          if (previousPrice > currentPrice) {
             console.log(existingDataParsed, details);
             const priceDifference = currentPrice - previousPrice;
             const pricePercentage = (
