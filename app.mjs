@@ -146,36 +146,41 @@ async function scrapeSneakerDetails(sneakers) {
             details.promotionalPrice || details.originalPrice;
 
           if (previousPrice > currentPrice) {
-            console.log(existingDataParsed, details);
             const priceDifference = currentPrice - previousPrice;
             const pricePercentage = (
               (priceDifference / previousPrice) *
               100
             ).toFixed(2);
-            priceChange = `O preço mudou de R$${previousPrice.toFixed(
-              2
-            )} para R$${currentPrice.toFixed(2)} (${
-              priceDifference > 0 ? "↑" : "↓"
-            } ${Math.abs(pricePercentage)}%)\n`;
 
-            dailyPriceChanges.push({
-              silhoutte: details.silhoutte,
-              priceChange: priceChange,
-              url: details.url,
-            });
+            // Verificar se a diferença de preço é maior que 10%
+            if (Math.abs(pricePercentage) > 10) {
+              priceChange = `O preço mudou de R$${previousPrice.toFixed(
+                2
+              )} para R$${currentPrice.toFixed(2)} (${
+                priceDifference > 0 ? "↑" : "↓"
+              } ${Math.abs(pricePercentage)}%)\n`;
 
-            changeType = "⚡ Mudança de Preço";
-            const priceChangeMessage =
-              `${changeType} no tênis ${details.silhoutte}!\n` +
-              `${priceChange}` +
-              `Tamanhos disponíveis: ${details.availableSizes.join(", ")}\n` +
-              `🛒 Confira aqui: ${details.url}`;
+              dailyPriceChanges.push({
+                silhoutte: details.silhoutte,
+                priceChange: priceChange,
+                url: details.url,
+              });
 
-            // Enviar mensagem somente se houver desconto
-            if (details.promotionalPrice || previousPrice > currentPrice) {
+              changeType = "⚡ Mudança de Preço";
+              const priceChangeMessage =
+                `${changeType} no tênis ${details.silhoutte}!\n` +
+                `${priceChange}` +
+                `Tamanhos disponíveis: ${details.availableSizes.join(", ")}\n` +
+                `🛒 Confira aqui: ${details.url}`;
+
+              // Enviar mensagem somente se a diferença de preço for maior que 10%
               await sendWhatsappMessage(
                 priceChangeMessage,
                 details.images[0].url
+              );
+            } else {
+              console.info(
+                `[INFO] Mudança de preço inferior a 10%. Nenhuma mensagem enviada.`
               );
             }
           }
