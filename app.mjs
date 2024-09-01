@@ -152,8 +152,8 @@ async function scrapeSneakerDetails(sneakers) {
               100
             ).toFixed(2);
 
-            // Verificar se a diferença de preço é maior que 10%
-            if (Math.abs(pricePercentage) > 10) {
+            // Verificar se a diferença de preço é maior que 20%
+            if (Math.abs(pricePercentage) > 20) {
               priceChange = `O preço mudou de R$${previousPrice.toFixed(
                 2
               )} para R$${currentPrice.toFixed(2)} (${
