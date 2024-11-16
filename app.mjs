@@ -16,6 +16,7 @@ import {
   RETRY_BASE,
   RETRY_ATTEMPTS,
 } from "./lib/environment.mjs";
+
 import { sendWhatsappMessage } from "./lib/notifications/whatsapp.mjs";
 
 puppeteer.use(StealthPlugin());
